@@ -60,7 +60,7 @@ conexao.commit()
 
 def atualizar_arquivo():
 
-    cursor.execute("SELECT id, nome, email FROM usuarios")
+    cursor.execute("SELECT id, nome, email, senha FROM usuarios")
     usuarios = cursor.fetchall()
 
     with open(caminho_txt, "w", encoding="utf-8") as arquivo:
@@ -70,6 +70,7 @@ def atualizar_arquivo():
             arquivo.write(f"ID: {pessoa[0]}\n")
             arquivo.write(f"Nome: {pessoa[1]}\n")
             arquivo.write(f"Email: {pessoa[2]}\n")
+            arquivo.write(f"Senha: {pessoa[3]}\n")
             arquivo.write("-------------------\n")
 
     print()
@@ -89,6 +90,7 @@ while True:
     print("2 - Cadastrar usuario")
     print("3 - Encerrar programa")
     print("4 - Listar usuarios")
+    print("5 - Reiniciar sistema (Apagar todos os usuários)")
     print()
 
     try:
@@ -193,7 +195,7 @@ while True:
 
         elif not email.endswith("@gmail.com"):
 
-            print("Email inválido. Use um email do Gmail.")
+            print("Email inválido. Use um email do Gmail. (Exemplo: usuario@gmail.com)")
 
         else:
 
@@ -255,6 +257,24 @@ while True:
                 print(f"Email: {email}")
                 print(f"Senha: {senha}")
                 print("--------------------")
+
+     # --------------------------------------------------
+    # REINICIA E EXCLUI OS USUARIOS
+    # --------------------------------------------------
+    
+    elif opc == 5:
+
+            cursor.execute("DELETE FROM usuarios")
+
+            # Reinicia o contador do AUTOINCREMENT
+            cursor.execute("DELETE FROM sqlite_sequence WHERE name = 'usuarios'")
+
+            conexao.commit()
+
+            atualizar_arquivo()
+
+            print("Todos os usuários foram removidos.")
+            print("Sistema reiniciado. O próximo usuário terá ID 1.")
 
 
     else:
